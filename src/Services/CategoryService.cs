@@ -5,19 +5,21 @@ namespace ParcelCalculator.Services
 {
     public class CategoryService : ICategoryService
     {
+        private readonly IEnumerable<ICategoryStrategy> _categoryStrategies;
+        public CategoryService(IEnumerable<ICategoryStrategy> categoryStrategies)
+        {
+            _categoryStrategies = categoryStrategies;
+        }
         public Category GetCategory(decimal weight, decimal volume)
         {
-            if (weight > 50)
-                return Category.Reject;
-            if (weight > 10)
-                return Category.Heavy;
-
-            if (volume < 1500)
-                return Category.Small;
-            if (volume < 2500)
-                return Category.Medium;
-            if (volume >= 2500)
-                return Category.Large;
+            foreach (var strategy in _categoryStrategies)
+            {
+                var category = strategy.GetCategory(weight, volume);
+                if (category != Category.None && category != Category.Reject)
+                {
+                    return category;
+                }
+            }
 
             return Category.Reject;
         }

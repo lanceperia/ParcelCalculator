@@ -1,6 +1,7 @@
 using ParcelCalculator.Interfaces;
 using ParcelCalculator.Middlewares;
 using ParcelCalculator.Services;
+using ParcelCalculator.Strategies;
 using System.Reflection;
 
 namespace ParcelCalculator
@@ -25,6 +26,8 @@ namespace ParcelCalculator
 
             builder.Services.AddScoped<ICostService, CostService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICategoryStrategy, WeightCategoryStrategy>();
+            builder.Services.AddScoped<ICategoryStrategy, VolumeCategoryStrategy>();
 
             var app = builder.Build();
             app.UseMiddleware<ExceptionMiddleware>();
