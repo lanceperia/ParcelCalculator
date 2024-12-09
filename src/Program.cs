@@ -25,9 +25,11 @@ namespace ParcelCalculator
             });
 
             builder.Services.AddScoped<ICostService, CostService>();
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
-            builder.Services.AddScoped<ICategoryStrategy, WeightCategoryStrategy>();
-            builder.Services.AddScoped<ICategoryStrategy, VolumeCategoryStrategy>();
+            builder.Services.AddScoped<IPricingStrategy, RejectedParcelStrategy>();
+            builder.Services.AddScoped<IPricingStrategy, HeavyParcelStrategy>();
+            builder.Services.AddScoped<IPricingStrategy, SmallParcelStrategy>();
+            builder.Services.AddScoped<IPricingStrategy, MediumParcelStrategy>();
+            builder.Services.AddScoped<IPricingStrategy, LargeParcelStrategy>();
 
             var app = builder.Build();
             app.UseMiddleware<ExceptionMiddleware>();

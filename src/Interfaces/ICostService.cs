@@ -1,4 +1,5 @@
 ﻿using ParcelCalculator.DTOs;
+using ParcelCalculator.Entities;
 using ParcelCalculator.Enums;
 
 namespace ParcelCalculator.Interfaces
@@ -8,6 +9,6 @@ namespace ParcelCalculator.Interfaces
     /// </summary>
     public interface ICostService
     {
-        string GetCost(Category category, decimal weight, decimal volume);
+        string GetCost(Parcel parcel);
     }
 }

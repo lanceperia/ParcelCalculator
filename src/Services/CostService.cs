@@ -1,4 +1,4 @@
-﻿using ParcelCalculator.Enums;
+﻿using ParcelCalculator.Entities;
 using ParcelCalculator.Interfaces;
 
 namespace ParcelCalculator.Services
@@ -8,21 +8,29 @@ namespace ParcelCalculator.Services
     /// </summary>
     public class CostService : ICostService
     {
-        public string GetCost(Category category, decimal weight, decimal volume)
+        private readonly IEnumerable<IPricingStrategy> _pricingStrategies;
+        public CostService(IEnumerable<IPricingStrategy> pricingStrategies)
         {
-            switch (category)
+            _pricingStrategies = pricingStrategies;
+        }
+        public string GetCost(Parcel parcel)
+        {
+            foreach (var strategy in _pricingStrategies)
             {
-                case Category.Heavy:
-                    return (weight * 15).ToString("C");
-                case Category.Small:
-                    return (volume * 0.05m).ToString("C");
-                case Category.Medium:
-                    return (volume * 0.04m).ToString("C");
-                case Category.Large:
-                    return (volume * 0.03m).ToString("C");
-                default:
-                    return "N/A";
+                var cost = strategy.CalculateCost(parcel);
+
+                if (cost == null)
+                    break;
+
+                if (cost > 0)
+                {
+                    parcel.Category = strategy.GetType().Name.Replace("ParcelStrategy", "");
+                    return cost.Value.ToString("C");
+                }
             }
+
+            parcel.Category = "Rejected";
+            return "N/A";
         }
     }
 }

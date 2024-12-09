@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ParcelCalculator.DTOs;
-using ParcelCalculator.Enums;
+using ParcelCalculator.Entities;
 using ParcelCalculator.Exceptions;
 using ParcelCalculator.Interfaces;
 
@@ -11,12 +11,10 @@ namespace ParcelCalculator.Controllers
     public class ParcelController : Controller
     {
         private readonly ICostService _costService;
-        private readonly ICategoryService _categoryService;
 
-        public ParcelController(ICostService costService, ICategoryService categoryService)
+        public ParcelController(ICostService costService)
         {
             _costService = costService;
-            _categoryService = categoryService;
         }
 
         [HttpPost(Name = "GetParcelDetails")]
@@ -37,20 +35,19 @@ namespace ParcelCalculator.Controllers
                 throw new ParameterValidationException("Values cannot be negative");
             }
 
-            var volume = dto.Width * dto.Height * dto.Depth;
-            var category = _categoryService.GetCategory(dto.Weight, volume);
-            var cost = _costService.GetCost(category, weight, volume);
-
-            var categoryString = $"{category} Parcel";
-            if (category == Category.Reject)
+            var parcel = new Parcel()
             {
-                categoryString = "Rejected";
-            }
+                Depth = depth,
+                Height = height,
+                Weight = weight,
+                Width = width
+            };
+            var cost = _costService.GetCost(parcel);
 
             var response = new GetParcelResponseDto()
             {
-                Category = categoryString,
-                Cost = cost
+                Category = parcel.Category,
+                Cost = cost 
             };
 
             return response;

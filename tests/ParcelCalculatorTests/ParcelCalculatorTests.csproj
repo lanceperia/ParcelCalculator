@@ -10,7 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\ParcelControllerUnitTest.cs" />
     <Compile Remove="Services\CategoryServiceUnitTest.cs" />
+    <Compile Remove="Services\CostServiceUnitTest.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +29,11 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
